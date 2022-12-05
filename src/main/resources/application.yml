@@ -1,0 +1,25 @@
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: collector
+logging:
+  level:
+    org.springframework.data.mongodb.core.MongoTemplate: DEBUG
+weekly-updater:
+  publisher: panini-manga-mx
+  titles: seraph-of-the-end,tokyo-revengers
+  images:
+    path: D:\\Documents\\imagesCollector\\
+  datasource:
+    h2:
+      jdbc-url: jdbc:h2:mem:mydb
+      username: sa
+      password: password
+      driver-class-name: org.h2.Driver
+    postgres:
+      jdbc-url: jdbc:postgresql://localhost:5432/collector
+      username: postgres
+      password: admin
+      driver-class-name: org.postgresql.Driver
