@@ -1,5 +1,6 @@
 package xyz.krakenkat.weeklyupdater.processor;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.batch.item.ItemProcessor;
@@ -16,9 +17,13 @@ import xyz.krakenkat.weeklyupdater.model.Issue;
 import xyz.krakenkat.weeklyupdater.util.Decider;
 
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
+@RequiredArgsConstructor
 public class IssueItemProcessor implements ItemProcessor<TitleDTO, List<ItemDTO>> {
+
+    private final MongoOperations mongoOperations;
 
     @Value("${weekly-updater.images.path}")
     private String path;
@@ -26,11 +31,8 @@ public class IssueItemProcessor implements ItemProcessor<TitleDTO, List<ItemDTO>
     @Value("${weekly-updater.publisher}")
     private String folder;
 
-    @Autowired
-    private MongoOperations mongoOperations;
-
     @Override
-    public List<ItemDTO> process(final TitleDTO titleDTO) throws Exception {
+    public List<ItemDTO> process(final TitleDTO titleDTO) {
         log.info(String.format("PROCESSOR: Getting information for %s", titleDTO.getKey()));
         List<ItemDTO> databaseList = getDatabaseList(titleDTO.getTitle());
         List<ItemDTO> whakoomList = WhakoomLector
@@ -46,7 +48,7 @@ public class IssueItemProcessor implements ItemProcessor<TitleDTO, List<ItemDTO>
 
         log.info(String.format("PROCESSOR: Items collected for %s: %d", titleDTO.getKey(), whakoomList.size()));
 
-        return Utilities.joinLists(whakoomList, Decider.getInstance(path, folder, titleDTO).getDetails(databaseList));
+        return Utilities.joinLists(whakoomList, Objects.requireNonNull(Decider.getInstance(path, folder, titleDTO)).getDetails(databaseList));
     }
 
     private List<ItemDTO> getDatabaseList(String titleId) {
@@ -64,5 +66,4 @@ public class IssueItemProcessor implements ItemProcessor<TitleDTO, List<ItemDTO>
                         .build())
                 .toList();
     }
-
 }

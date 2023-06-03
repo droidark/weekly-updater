@@ -1,33 +1,60 @@
 package xyz.krakenkat.weeklyupdater.util;
 
-import xyz.krakenkat.reader.lector.KamiteLector;
-import xyz.krakenkat.reader.lector.Lector;
-import xyz.krakenkat.reader.lector.PaniniLectorV2;
+import xyz.krakenkat.reader.lector.*;
 import xyz.krakenkat.weeklyupdater.dto.TitleDTO;
 
 public class Decider {
+
+    private Decider() {}
+
     public static Lector getInstance(String path, String publisher, TitleDTO titleDTO) {
-        if (publisher.equals("panini-manga-mx")) {
-            return PaniniLectorV2
+        return switch (publisher) {
+            case "panini-manga-mx" -> PaniniLectorV2
                     .builder()
                     .titleId(titleDTO.getTitle())
                     .key(titleDTO.getKey())
                     .url(titleDTO.getPublisherUrl())
                     .path(path)
                     .folder(publisher)
-                    .download(false)
+                    .download(Boolean.FALSE)
                     .build();
-        } else if (publisher.equals("kamite-manga")) {
-            return KamiteLector
+            case "kamite-manga" -> KamiteLectorV2
                     .builder()
                     .titleId(titleDTO.getTitle())
                     .key(titleDTO.getKey())
-                    .url(titleDTO.getWhakoomUrl())
+                    .url(titleDTO.getPublisherUrl())
                     .path(path)
                     .folder(publisher)
-                    .download(true)
+                    .download(Boolean.FALSE)
                     .build();
-        }
-        return null;
+            case "distrito-manga-mx" -> DistritoMangaLector
+                    .builder()
+                    .titleId(titleDTO.getTitle())
+                    .key(titleDTO.getKey())
+                    .url(titleDTO.getPublisherUrl())
+                    .path(path)
+                    .folder(publisher)
+                    .download(Boolean.FALSE)
+                    .build();
+            case "mangaline-mx" -> MangaLineLector
+                    .builder()
+                    .titleId(titleDTO.getTitle())
+                    .key(titleDTO.getKey())
+                    .url(titleDTO.getPublisherUrl())
+                    .path(path)
+                    .folder(publisher)
+                    .download(Boolean.FALSE)
+                    .build();
+            case "viz" -> VizLector
+                    .builder()
+                    .titleId(titleDTO.getTitle())
+                    .key(titleDTO.getKey())
+                    .url(titleDTO.getPublisherUrl())
+                    .path(path)
+                    .folder(publisher)
+                    .download(Boolean.FALSE)
+                    .build();
+            default -> null;
+        };
     }
 }

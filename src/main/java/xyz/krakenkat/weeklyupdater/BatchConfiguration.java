@@ -1,19 +1,20 @@
 package xyz.krakenkat.weeklyupdater;
 
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
-import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.transaction.PlatformTransactionManager;
 import xyz.krakenkat.reader.dto.ItemDTO;
 import xyz.krakenkat.weeklyupdater.dto.TitleDTO;
 import xyz.krakenkat.weeklyupdater.processor.IssueItemProcessor;
@@ -26,15 +27,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Configuration
-@EnableBatchProcessing
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class BatchConfiguration {
 
-    @Autowired
-    public JobBuilderFactory jobBuilderFactory;
-
-    @Autowired
-    public StepBuilderFactory stepBuilderFactory;
+    private final MongoOperations mongoOperations;
 
     @Value("${weekly-updater.publisher}")
     private String publisher;
@@ -59,33 +55,30 @@ public class BatchConfiguration {
                 .build();
     }
 
-
     @Bean
     public IssueItemProcessor processor() {
-        return new IssueItemProcessor();
+        return new IssueItemProcessor(mongoOperations);
     }
 
     @Bean
-    public IssueWriter writer() { return new IssueWriter(); }
+    public IssueWriter writer() { return new IssueWriter(mongoOperations); }
 
     @Bean
-    public Job importerUserJob(Step step1) {
-        return jobBuilderFactory
-                .get("importUserJob")
-                .incrementer(new RunIdIncrementer())
-                .flow(step1)
-                .end()
+    public Step step1(JobRepository jobRepository, PlatformTransactionManager transactionManager, JdbcCursorItemReader<TitleDTO> reader) {
+        return new StepBuilder("step1", jobRepository)
+                .<TitleDTO, List<ItemDTO>>chunk(10, transactionManager)
+                .reader(reader)
+                .processor(processor())
+                .writer(writer())
                 .build();
     }
 
     @Bean
-    public Step step1(JdbcCursorItemReader<TitleDTO> reader) {
-        return stepBuilderFactory
-                .get("step1")
-                .<TitleDTO, List<ItemDTO>> chunk(10)
-                .reader(reader)
-                .processor(processor())
-                .writer(writer())
+    public Job importerUserJob(JobRepository jobRepository, Step step1) {
+        return new JobBuilder("importUserJob", jobRepository)
+                .incrementer(new RunIdIncrementer())
+                .flow(step1)
+                .end()
                 .build();
     }
 }

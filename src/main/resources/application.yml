@@ -9,7 +9,7 @@ logging:
     org.springframework.data.mongodb.core.MongoTemplate: DEBUG
 weekly-updater:
   publisher: panini-manga-mx
-  titles: seraph-of-the-end,tokyo-revengers
+  titles: chainsaw-man
   images:
     path: D:\\Documents\\imagesCollector\\
   datasource:
