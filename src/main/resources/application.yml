@@ -9,7 +9,7 @@ logging:
     org.springframework.data.mongodb.core.MongoTemplate: DEBUG
 weekly-updater:
   publisher: panini-manga-mx
-  titles: chainsaw-man
+  titles: insomnes,vagabond,komi-san,mushishi,naruto-gold,one-piece,rent-a-girlfriend,vanitas-no-carte,kemono-jihen,the-killer-inside
   images:
     path: D:\\Documents\\imagesCollector\\
   datasource:
