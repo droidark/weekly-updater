@@ -8,8 +8,8 @@ logging:
   level:
     org.springframework.data.mongodb.core.MongoTemplate: DEBUG
 weekly-updater:
-  publisher: panini-manga-mx
-  titles: el-canto-de-la-noche,jojos-bizarre-adventure-steel-ball-run,komi-san,tanya-the-evil,pluto,rent-a-girlfriend,saint-seiya-final-edition,the-killer-inside,mushishi,the-elusive-samurai,heavenly-delusion,insomnes,sasaki-y-miyano,bakemonogatari,black-clover,choujin-x,edens-zero,jujutsu-kaisen,mabataki-yori-hayaku,my-dress-up-darling,nuestros-colores,one-piece,sakamoto-days,sao-novels,tokyo-revengers,twin-star-exorcists,undead-unluck,vampire-knight-memories,vanitas-no-carte
+  publisher: distrito-manga-mx
+  titles: as-the-gods-will-la-secuela
   images:
     path: D:\\Documents\\imagesCollector\\
   datasource:
@@ -19,7 +19,7 @@ weekly-updater:
       password: password
       driver-class-name: org.h2.Driver
     postgres:
-      jdbc-url: jdbc:postgresql://host.docker.internal:6543/collector
+      jdbc-url: jdbc:postgresql://host.docker.internal:5432/collector
       username: postgres
       password: admin
       driver-class-name: org.postgresql.Driver
