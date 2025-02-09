@@ -14,7 +14,7 @@
     <name>weekly-updater</name>
     <description>weekly-updater</description>
     <properties>
-        <java.version>22</java.version>
+        <java.version>23</java.version>
     </properties>
     <dependencies>
         <dependency>

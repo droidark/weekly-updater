@@ -8,8 +8,8 @@ logging:
   level:
     org.springframework.data.mongodb.core.MongoTemplate: DEBUG
 weekly-updater:
-  publisher: distrito-manga-mx
-  titles: as-the-gods-will-la-secuela
+  publisher: panini-manga-mx
+  titles: bungo-stray-dogs,de-yakuza-a-amo-de-casa,por-tu-culpa-no-puedo-respirar,the-elusive-samurai,re-zero-chapter-four,junjo-romantica,shangri-la-frontier,el-canto-de-la-noche,kemono-jihen,one-piece,blue-exorcist,overlord,girlfriend-girlfriend
   images:
     path: D:\\Documents\\imagesCollector\\
   datasource:
